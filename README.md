@@ -1,51 +1,60 @@
 <div align="center">
 
-# ⚡ Seif Afandi ⚡
-### 👨‍💻 Software Developer & Reverse Engineering Enthusiast 
+# ⚡ SEIF AFANDI ⚡
+### 👨‍💻 Software Developer & Reverse Engineering Enthusiast
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=45A1FF&width=435&lines=Systems+Programming;Reverse+Engineering;High-Performance+Tools;Interactive+Web+Apps)](https://git.io/typing-svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=40&pause=1000&color=20C20E&random=false&width=500&lines=%E2%96%88+%3C%2FSeif+Afandi%3E+;%E2%96%88+Binary+Breaker">
+  <img alt="Seif Afandi" src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=40&pause=1000&color=000000&random=false&width=500&lines=%E2%96%88+%3C%2FSeif+Afandi%3E+;%E2%96%88+Binary+Breaker">
+</picture>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=100&section=header&text=Welcome&fontSize=40&animation=fadeIn" />
+
+</div>
 
 ---
+
+### 🟢 About Me
+
+> Dedicated to mastering the art of high-performance systems and deconstructing complex software architectures. I don't just write code; I explore how it thinks.
+
+---
+
+### 🛠️ Tech Stack & Skills
+
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=cpp,rust,py,js,ts,html,css,bash&theme=dark" />
+</div>
+
+<br>
 
 <p align="center">
-Passionate developer focused on building high-performance tools and exploring the depths of software architecture. 
-Tackling complex challenges from low-level systems programming to creating interactive web applications.
+  <img src="https://img.shields.io/badge/Focus-Low--Level%20Programming-20C20E?style=for-the-badge&logo=cpu&logoColor=black&labelColor=20C20E" alt="Low-Level" />
+  <img src="https://img.shields.io/badge/Specialty-Reverse%20Engineering-FF4500?style=for-the-badge&logo=shield&logoColor=black&labelColor=FF4500" alt="RevEng" />
 </p>
 
-</div>
-
-### 🛠️ Skills & Tech Stack
-
-#### 🚀 Languages & Core
-![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
-![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-
-#### 🌐 Web & Scripting
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![Shell](https://img.shields.io/badge/Shell_Script-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
-![VBScript](https://img.shields.io/badge/VBScript-0078D7?style=for-the-badge&logo=visual-studio&logoColor=white)
-
 ---
 
-### 🛡️ Areas of Expertise
-*   **Reverse Engineering:** Deep diving into binary analysis and software deconstruction.
-*   **Low-Level Systems:** Direct hardware interaction and performance optimization.
-*   **Security Research:** Exploring vulnerabilities and developing defensive tools.
-
----
-
-### 📊 GitHub Stats
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Seif-Afandi&show_icons=true&theme=tokyonight&hide_border=true" alt="Seif Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Seif-Afandi&layout=compact&theme=tokyonight&hide_border=true" alt="Top Langs" />
-</div>
-
----
+### 📊 System Diagnostics (GitHub Stats)
 
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=Seif-Afandi&color=blue&style=flat-square&label=PROFILE+VIEWS" alt="views" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-sigma-five.vercel.app/api?username=Seif-Afandi&show_icons=true&theme=tokyonight&bg_color=0D1117&hide_border=true&include_all_commits=true&count_private=true">
+    <img alt="GitHub Stats" src="https://github-readme-stats-sigma-five.vercel.app/api?username=Seif-Afandi&show_icons=true&theme=default&hide_border=true">
+  </picture>
+  
+  <br>
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=Seif-Afandi&layout=compact&theme=tokyonight&bg_color=0D1117&hide_border=true&hide=html,css">
+    <img alt="Top Languages" src="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=Seif-Afandi&layout=compact&theme=default&hide_border=true&hide=html,css">
+  </picture>
+</div>
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=auto&height=20&section=footer&animation=fadeIn" />
+
+<br>
+
+<div align="center">
+  <img src="https://komarev.com/ghpvc/?username=Seif-Afandi&color=green&style=flat-square&label=ACCESS%20COUNT" alt="views" />
 </div>
