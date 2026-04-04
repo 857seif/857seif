@@ -30,10 +30,9 @@
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=rect&color=000000&height=30&section=footer&animation=fadeIn" />
   
-  <!-- Dynamic Access Counter: Starts at 13516, increases by 7 each step -->
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&duration=1500&pause=100&color=45A1FF&center=true&vCenter=true&width=450&lines=SECTOR_ACCESS_COUNT:+13516;SECTOR_ACCESS_COUNT:+13523;SECTOR_ACCESS_COUNT:+13530;SECTOR_ACCESS_COUNT:+13537;SECTOR_ACCESS_COUNT:+13544;SECTOR_ACCESS_COUNT:+13551;SECTOR_ACCESS_COUNT:+13558" alt="Sector Access Count" />
+  <!-- تم تعديل الـ base ليبدأ من 13516 -->
+  <img src="https://komarev.com/ghpvc/?username=Seif-Afandi&color=45A1FF&style=flat-square&label=SECTOR_ACCESS_COUNT&base=13516" alt="views" />
 
-  <!-- Hidden Trackers for actual analytics -->
   <img src="https://komarev.com/ghpvc/?username=Seif-Afandi-v1" width="0" height="0" />
   <img src="https://komarev.com/ghpvc/?username=Seif-Afandi-v2" width="0" height="0" />
   <img src="https://komarev.com/ghpvc/?username=Seif-Afandi-v3" width="0" height="0" />
