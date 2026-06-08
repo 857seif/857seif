@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SEIF | Reverse Engineering · Cracking · Binary Research</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --accent: #FF3D7A;
+      --accent-glow: rgba(255, 61, 122, 0.3);
+      --bg-dark: #0A0A0F;
+      --bg-card: rgba(15, 15, 25, 0.7);
+      --text-main: #EDEDF5;
+      --text-dim: #8B8B9E;
+      --border-dim: rgba(255, 255, 255, 0.06);
+    }
+
+    body {
+      background-color: #050508;
+      background-image: radial-gradient(circle at 25% 0%, rgba(255, 61, 122, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 100%, rgba(192, 132, 252, 0.06) 0%, transparent 60%);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* moving background particles */
+    .moving-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .moving-bg span {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0.15;
+      animation: floatAround 20s linear infinite;
+    }
+    @keyframes floatAround {
+      0% { transform: translateY(100vh) scale(1); opacity: 0; }
+      10% { opacity: 0.2; }
+      90% { opacity: 0.1; }
+      100% { transform: translateY(-20vh) scale(0); opacity: 0; }
+    }
+
+    .wrap {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (max-width: 700px) {
+      .wrap {
+        padding: 0 20px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #111;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 10px;
+    }
+
+    /* theme switcher */
+    .theme-switch {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      background: #1a1a2a;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .theme-switch:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+    .theme-palette {
+      position: fixed;
+      bottom: 85px;
+      right: 24px;
+      background: #0f0f1ad9;
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 16px;
+      width: 250px;
+      border: 1px solid rgba(255,255,255,0.1);
+      z-index: 199;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.95);
+      transition: 0.2s;
+    }
+    .theme-palette.open {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .theme-color {
+      height: 40px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.1s;
+      border: 1px solid transparent;
+    }
+    .theme-color.active {
+      border-color: white;
+      transform: scale(1.05);
+    }
+
+    /* navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 18px 0;
+      background: rgba(5,5,10,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-dim);
+      z-index: 100;
+      transition: 0.2s;
+    }
+    .navbar.scrolled {
+      padding: 10px 0;
+      background: rgba(0,0,0,0.95);
+    }
+    .nav-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: #aaa;
+      transition: 0.2s;
+      font-family: 'Space Mono', monospace;
+    }
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+    .mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-size: 24px;
+    }
+    @media (max-width: 800px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-btn {
+        display: block;
+      }
+      .mobile-menu {
+        position: fixed;
+        inset: 0;
+        background: #05050ae6;
+        backdrop-filter: blur(40px);
+        z-index: 90;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s;
+      }
+      .mobile-menu.open {
+        opacity: 1;
+        visibility: visible;
+      }
+      .mobile-links {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+      }
+      .mobile-links a {
+        font-size: 28px;
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+      }
+    }
+
+    /* banner */
+    .banner {
+      margin-top: 85px;
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.6);
+    }
+    .banner img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      display: block;
+      opacity: 0.9;
+    }
+
+    /* hero */
+    .hero {
+      padding: 70px 0 60px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,61,122,0.1);
+      border: 0.5px solid var(--accent);
+      padding: 6px 18px;
+      border-radius: 60px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .highlight {
+      background: linear-gradient(120deg, #fff, var(--accent), #ffb3c6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .desc {
+      font-size: 1rem;
+      color: #9ca3af;
+      max-width: 550px;
+      border-left: 2px solid var(--accent);
+      padding-left: 24px;
+      margin: 20px 0 32px;
+      line-height: 1.6;
+    }
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--accent);
+      border: none;
+      padding: 12px 32px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #0a0a0a;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      transform: scale(1.02);
+      filter: brightness(1.05);
+    }
+    .btn-outline {
+      border: 1px solid #4b5563;
+      padding: 12px 32px;
+      border-radius: 60px;
+      text-decoration: none;
+      color: #ddd;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* stats */
+    .stats-grid {
+      display: flex;
+      gap: 1px;
+      background: var(--border-dim);
+      border-radius: 28px;
+      overflow: hidden;
+      margin: 50px 0 80px;
+      background: rgba(20,20,30,0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-dim);
+    }
+    .stat-item {
+      flex: 1;
+      padding: 28px 16px;
+      text-align: center;
+      background: rgba(0,0,0,0.2);
+      transition: 0.2s;
+    }
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+    }
+    .stat-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      margin-top: 6px;
+      color: #8b8b9e;
+    }
+    @media (max-width: 600px) {
+      .stats-grid {
+        flex-wrap: wrap;
+      }
+      .stat-item {
+        min-width: 50%;
+      }
+    }
+
+    /* sections */
+    .section {
+      padding: 70px 0;
+      border-top: 1px solid var(--border-dim);
+    }
+    .section-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-dim);
+      border-radius: 28px;
+      padding: 28px;
+      transition: 0.2s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+    .card p {
+      color: #a0a0b0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .tag {
+      background: rgba(255,255,255,0.05);
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 10px;
+      color: #bbb;
+    }
+
+    /* skills table */
+    .skills-box {
+      background: rgba(0,0,0,0.3);
+      border-radius: 28px;
+      border: 1px solid var(--border-dim);
+      overflow: hidden;
+    }
+    .skill-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1.8fr;
+      padding: 14px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 14px;
+    }
+    .skill-header {
+      background: rgba(255,61,122,0.08);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 11px;
+    }
+    @media (max-width: 650px) {
+      .skill-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .skill-row div:last-child {
+        display: none;
+      }
+    }
+
+    /* contact */
+    .contact-box {
+      background: linear-gradient(145deg, rgba(255,61,122,0.05), rgba(0,0,0,0.3));
+      border-radius: 36px;
+      padding: 48px 32px;
+      text-align: center;
+      margin: 60px 0;
+      border: 1px solid rgba(255,61,122,0.2);
+    }
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: #6b7280;
+      font-size: 12px;
+      border-top: 1px solid var(--border-dim);
+    }
+
+    /* reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="moving-bg" id="movingBg"></div>
+
+<div class="theme-switch" id="themeToggleBtn">🎨 THEMES +</div>
+<div class="theme-palette" id="themePalette">
+  <div style="font-size:12px; font-weight:bold;">Pick your vibe</div>
+  <div class="theme-grid" id="themeGrid"></div>
+</div>
+
+<nav class="navbar" id="navbar">
+  <div class="wrap nav-flex">
+    <a href="#" class="logo">SEIF</a>
+    <div class="nav-links">
+      <a href="#cracking">CRACKING</a>
+      <a href="#toolchain">TOOLCHAIN</a>
+      <a href="#skills">SKILLS</a>
+      <a href="#repos">RELEASES</a>
+    </div>
+    <button class="mobile-btn" id="mobileBtn">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-links">
+    <a href="#cracking">CRACKING</a>
+    <a href="#toolchain">TOOLCHAIN</a>
+    <a href="#skills">SKILLS</a>
+    <a href="#repos">RELEASES</a>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="banner">
+      <img src="https://raw.githubusercontent.com/857seif/857seif/main/gif.gif" alt="SEIF banner">
+    </div>
+
+    <section class="hero">
+      <div class="badge"><span>⚡</span> CRACKER · REVERSE ENGINEER · BINARY RESEARCHER</div>
+      <h1><span class="highlight">SEIF</span><br>Crack protections.<br>Master the binary.</h1>
+      <p class="desc">I live and breathe reverse engineering — unpacking VMProtect, analyzing DRM, crafting keygens, loaders, and patches. Everything I do is for research and educational purposes. No shady stuff, just pure low-level problem solving.</p>
+      <div class="btn-group">
+        <a href="#repos" class="btn-primary">→ EXPLORE TOOLS</a>
+        <a href="#toolchain" class="btn-outline">METHODOLOGY</a>
+      </div>
+    </section>
+
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-number">15+</div><div class="stat-label">OPEN TOOLS</div></div>
+      <div class="stat-item"><div class="stat-number">x86/ARM</div><div class="stat-label">ARCH</div></div>
+      <div class="stat-item"><div class="stat-number">VMP3</div><div class="stat-label">UNPACKING</div></div>
+      <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">RESEARCH</div></div>
+    </div>
+
+    <section id="cracking" class="section">
+      <div class="section-tag">— CORE EXPERTISE —</div>
+      <h2 class="section-title">How I <span style="color:var(--accent)">break</span> stuff</h2>
+      <div class="cards">
+        <div class="card"><h3>🔓 DRM Analysis</h3><p>Deep diving into Steam & Denuvo protections, emulating license servers, stripping anti-tamper for research.</p><div class="tag-list"><span class="tag">Steam</span><span class="tag">Denuvo</span></div></div>
+        <div class="card"><h3>📦 VMProtect Unpacking</h3><p>Full unpacking of VMProtect 2.x/3.x, handler analysis, trace reconstruction, and custom deobfuscation.</p><div class="tag-list"><span class="tag">VMProtect</span><span class="tag">Unpack</span></div></div>
+        <div class="card"><h3>🔑 Keygen Engineering</h3><p>Reversing licensing algorithms, RSA bypass, writing clean patchless keygens in C/ASM.</p><div class="tag-list"><span class="tag">Keygen</span><span class="tag">RSA</span></div></div>
+        <div class="card"><h3>🧩 Loaders & Patchers</h3><p>Building runtime loaders, DLL proxying, inline patching, and memory hooks.</p><div class="tag-list"><span class="tag">DLL Proxy</span><span class="tag">Inline patch</span></div></div>
+        <div class="card"><h3>🛡️ Anti-Debug Evasion</h3><p>Defeating timing checks, NtGlobalFlag tricks, hardware breakpoint detection.</p></div>
+        <div class="card"><h3>🌐 Network License Emu</h3><p>Reversing client-server validation, building local emulators for license servers.</p></div>
+      </div>
+    </section>
+
+    <section id="toolchain" class="section">
+      <div class="section-tag">— FULL TOOLCHAIN —</div>
+      <h2 class="section-title">My <span style="color:var(--accent)">arsenal</span></h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 40px;">
+        <span class="tag" style="background:var(--accent);color:#000;">x64dbg</span>
+        <span class="tag">IDA Pro</span><span class="tag">Ghidra</span><span class="tag">WinDbg</span>
+        <span class="tag">x86 asm</span><span class="tag">Rust</span><span class="tag">C++</span>
+        <span class="tag">Python</span><span class="tag">Frida</span><span class="tag">C#</span>
+        <span class="tag">PowerShell</span><span class="tag">Batch</span>
+      </div>
+      <div class="cards">
+        <div class="card"><h3>🔧 Debugging & Disassembly</h3><p>Heavy usage of x64dbg, IDA scripting, and WinDbg. I break anti-debug tricks and unpack custom protectors.</p></div>
+        <div class="card"><h3>⚙️ Automation</h3><p>Writing unpackers, patchers, and keygen generators in Rust and Python for automated workflows.</p></div>
+        <div class="card"><h3>🧠 Static + Dynamic Analysis</h3><p>Combining Ghidra decompilation with Frida hooking to analyze obfuscated binaries.</p></div>
+        <div class="card"><h3>🔬 Exploit Research</h3><p>Memory corruption, kernel driver analysis — all in controlled research environments.</p></div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="section-tag">— COMPETENCY MATRIX —</div>
+      <h2 class="section-title">Skill <span style="color:var(--accent)">breakdown</span></h2>
+      <div class="skills-box">
+        <div class="skill-row skill-header"><div>DISCIPLINE</div><div>RATING</div><div>NOTES</div></div>
+        <div class="skill-row"><div>Reverse Engineering (x86/x64)</div><div>⭐⭐⭐⭐⭐</div><div>Full binary analysis & unpacking</div></div>
+        <div class="skill-row"><div>VMProtect / DRM</div><div>⭐⭐⭐⭐½</div><div>Handler dumping, VM entry recovery</div></div>
+        <div class="skill-row"><div>Keygen & License</div><div>⭐⭐⭐⭐☆</div><div>Algorithm reversal, patchless keygens</div></div>
+        <div class="skill-row"><div>Patching & Loaders</div><div>⭐⭐⭐⭐⭐</div><div>Runtime patching, DLL proxying</div></div>
+        <div class="skill-row"><div>Anti-Debug Bypass</div><div>⭐⭐⭐⭐½</div><div>Timing, NtGlobalFlag, hardware BP</div></div>
+        <div class="skill-row"><div>Exploit Development</div><div>⭐⭐⭐⭐☆</div><div>Memory corruption, weaponized PoC</div></div>
+      </div>
+    </section>
+
+    <section id="repos" class="section">
+      <div class="section-tag">— RELEASES & TOOLS —</div>
+      <h2 class="section-title">My <span style="color:var(--accent)">cracking arsenal</span></h2>
+      <div class="cards">
+        <div class="card repo-card" data-url="https://github.com/857seif/steam-fox-drm-unloacker"><h3>🦊 Steam Fox DRM Unlocker</h3><p>Research tool for studying Steam DRM and removing limitations.</p><div class="tag-list"><span class="tag">DRM</span><span class="tag">Steam</span></div></div>
+        <div class="card repo-card" data-url="https://github.com/857seif/atuo-DLL-Proxy-generator"><h3>🧩 Auto DLL Proxy Generator</h3><p>Generates ready-to-use proxy DLLs for hooking and code injection.</p><div class="tag-list"><span class="tag">DLL</span><span class="tag">Hooking</span></div></div>
+        <div class="card repo-card" data-url="https://github.com/857seif/online-fix-for-steam"><h3>🔧 Online Fix for Steam</h3><p>Steam multiplayer emulation for offline/LAN research.</p></div>
+        <div class="card repo-card" data-url="https://github.com/857seif/antimalware_protector"><h3>🛡️ Antimalware Protector</h3><p>Behavioral analysis & AV internals research.</p></div>
+        <div class="card repo-card" data-url="https://github.com/857seif/microsoft_token_generator"><h3>⚡ Microsoft Token Generator</h3><p>Async token engine with proxy rotation, written in Rust.</p></div>
+        <div class="card repo-card" data-url="https://github.com/857seif/Depot-dawnloader-gui-for-free"><h3>🎮 Depot Downloader GUI</h3><p>Clean GUI for downloading Steam depots.</p></div>
+        <div class="card repo-card" data-url="#"><h3>🧬 VMP Unpack Stub <span style="font-size:10px;color:var(--accent)">[PRIVATE]</span></h3><p>VMProtect trace recompiler — contact for research collab.</p><div class="tag-list"><span class="tag">Private</span><span class="tag">VMProtect</span></div></div>
+      </div>
+      <div style="text-align:center; margin-top:20px;"><span style="font-size:10px; background:#00000050; padding:5px 12px; border-radius:40px;">All tools for educational & security research only</span></div>
+    </section>
+
+    <div class="contact-box">
+      <h3 style="font-size:28px;">There will be More </h3>
+      <p style="margin:15px 0;">github page</p>
+      <div class="btn-group" style="justify-content:center;">
+        <a href="https://github.com/857seif" class="btn-primary" target="_blank">GitHub · 857seif</a>
+   
+      </div>
+    </div>
+    <footer>
+      <p>SEIF — Reverse Engineering · Binary Analysis · DRM Research · VMProtect Unpacking · Keygen Engineering</p>
+      <p style="margin-top:8px;">Everything is for educational & security research purposes only.</p>
+    </footer>
+  </div>
+</main>
+
+<script>
+
+  const themesList = [
+    { id:1, a:"#FF3D7A", b:"#FF8AAE" },{ id:2, a:"#C084FC", b:"#E9AFFE" },{ id:3, a:"#F97316", b:"#FDBA74" },
+    { id:4, a:"#06B6D4", b:"#67E8F9" },{ id:5, a:"#D946EF", b:"#F0ABFC" },{ id:6, a:"#FF4D4D", b:"#FF9999" },
+    { id:7, a:"#2DD4BF", b:"#6EE7B7" },{ id:8, a:"#A855F7", b:"#D8B4FE" },{ id:9, a:"#10B981", b:"#6EE7B7" },
+    { id:10,a:"#EF4444", b:"#FCA5A5" },{ id:11,a:"#60A5FA", b:"#93C5FD" },{ id:12,a:"#FDE047", b:"#FEF08A" }
+  ];
+  const themeGrid = document.getElementById('themeGrid');
+  function setTheme(id) {
+    const t = themesList.find(x=>x.id===id);
+    if(t){
+      document.documentElement.style.setProperty('--accent', t.a);
+      document.documentElement.style.setProperty('--accent-glow', t.a+'80');
+      localStorage.setItem('seif_theme', id);
+      document.querySelectorAll('.theme-color').forEach(el => el.classList.toggle('active', +el.dataset.t === id));
+    }
+  }
+  themesList.forEach(t => {
+    const dot = document.createElement('div');
+    dot.className = 'theme-color';
+    dot.dataset.t = t.id;
+    dot.style.background = `linear-gradient(135deg, ${t.a}, ${t.b})`;
+    dot.addEventListener('click', () => setTheme(t.id));
+    themeGrid.appendChild(dot);
+  });
+  const savedTheme = localStorage.getItem('seif_theme');
+  if(savedTheme) setTheme(parseInt(savedTheme));
+  else setTheme(1);
+
+
+  const toggleBtn = document.getElementById('themeToggleBtn');
+  const panel = document.getElementById('themePalette');
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if(!panel.contains(e.target) && e.target !== toggleBtn) panel.classList.remove('open');
+  });
+
+
+  const bg = document.getElementById('movingBg');
+  for(let i=0;i<80;i++){
+    let dot = document.createElement('span');
+    let size = Math.random()*4+1;
+    dot.style.width=size+'px'; dot.style.height=size+'px';
+    dot.style.left=Math.random()*100+'%';
+    dot.style.animationDuration=Math.random()*15+8+'s';
+    dot.style.animationDelay=Math.random()*20+'s';
+    bg.appendChild(dot);
+  }
+
+
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 30));
+
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold:0.1});
+  document.querySelectorAll('.section, .card, .stats-grid, .hero, .contact-box, .skills-box').forEach(el => el.classList.add('reveal'));
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+  const mobBtn = document.getElementById('mobileBtn');
+  const mobMenu = document.getElementById('mobileMenu');
+  mobBtn.addEventListener('click', ()=> {
+    mobMenu.classList.toggle('open');
+    document.body.style.overflow = mobMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mobile-links a, .nav-links a').forEach(link => {
+    link.addEventListener('click', () => { mobMenu.classList.remove('open'); document.body.style.overflow = ''; });
+  });
+
+  
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if(target) { e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+    });
+  });
+
+
+  document.querySelectorAll('.repo-card').forEach(card => {
+    const url = card.getAttribute('data-url');
+    if(url && url !== '#') card.addEventListener('click', () => window.open(url,'_blank'));
+  });
+</script>
+</body>
+</html>
