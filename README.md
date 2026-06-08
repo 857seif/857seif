@@ -28,9 +28,17 @@
 ---
 
 <div align="center">
+  <a href="https://857seif.github.io/857seif/" target="_blank">
+    <img src="https://img.shields.io/badge/ABOUT_ME-45A1FF?style=for-the-badge&logo=github&logoColor=black" alt="About Me" />
+  </a>
+</div>
+
+<br>
+
+<div align="center">
   <img src="https://capsule-render.vercel.app/api?type=rect&color=000000&height=30&section=footer&animation=fadeIn" />
   
-  <!-- تم تعديل الـ base ليبدأ من 13516 -->
+  
   <img src="https://komarev.com/ghpvc/?username=Seif-Afandi&color=45A1FF&style=flat-square&label=SECTOR_ACCESS_COUNT&base=13516" alt="views" />
 
   <img src="https://komarev.com/ghpvc/?username=Seif-Afandi-v1" width="0" height="0" />
