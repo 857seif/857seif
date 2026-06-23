@@ -36,16 +36,6 @@
 ---
 
 <div align="center">
-  <h3 style="color: #45A1FF;">📊 SECTOR_DATA.exe</h3>
-  <br>
-  <a href="https://github.com/anuraghazra/github-readme-stats">
-    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=857seif&layout=compact&theme=vision-and-dark" alt="Top Languages" />
-  </a>
-</div>
-
----
-
-<div align="center">
   <img src="https://capsule-render.vercel.app/api?type=rect&color=000000&height=30&section=footer&animation=fadeIn" />
   
   
